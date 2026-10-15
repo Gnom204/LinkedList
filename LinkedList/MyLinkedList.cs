@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 
 namespace LinkedList
 {
-    internal class LinkedList<T>
+    internal class MyLinkedList<T>
     {
-        ListElem<T> Prev;
-        ListElem<T> Next;
-        public LinkedList() {
-            this.Prev = null;
-            this.Next = null;
+        private ListElem<T> First;
+        private ListElem<T> Last;
+        private int Count;
+        public MyLinkedList() {
+            this.First = null;
+            this.Last = null;
+            this.Count = 0;
         }
         public T this[int index]
         {
             get
             {
-                ListElem<T> cur = this.Next;
+                if (index < 0 || index >= Count)
+                {
+                    throw new Exception("shit, Segmentation fault");
+                }
+                ListElem<T> cur = this.First;
                 int i = 0;
-                while (cur != null && i < index)
+                //Вынести в отдельный метод
+                while (cur != null && i < index-1)
                 {
                     cur = cur.Next;
                     i++;
@@ -27,7 +35,7 @@ namespace LinkedList
             }
             set
             {
-                ListElem<T> cur = this.Next;
+                ListElem<T> cur = this.First;
                 int i = 0;
                 while (cur != null && i < index)
                 {
@@ -40,53 +48,44 @@ namespace LinkedList
         public void AddFirst(T value)
         {
             ListElem<T> elem = new ListElem<T>(value);
-            if (this.Next == null)
+            if (this.First == null)
             {
-                this.Next = elem;
+                Count++;
+                this.First = elem;
+                this.Last = elem;
             }
             else
             {
-                this.Next.Prev = elem;
-                elem.Next = this.Next;
+                elem.Next = this.First;
+                this.First = elem;
+                Count++;
             }
         }
         public void AddLast(T value)
         {
             ListElem<T> elem = new ListElem<T>(value);
 
-            if (this.Next == null)
+            if (this.Last == null)
             {
-                this.Next = elem;
+                this.First = elem;
+                this.Last = elem;
+                Count++;
             }
             else
             {
-                ListElem<T> cur = this.Next;
-                while (cur.Next != null)
-                {
-                    cur = cur.Next;
-                }
+                ListElem<T> cur = this.Last;
                 cur.Next = elem;
                 elem.Prev = cur;
+                this.Last = elem;
+                Count++;
             }
         }
 
         public void AddAt(T val, int index)
         {
-            if (index == 0)
-            {
-                AddFirst(val);
-                return;
-            }
-
-            ListElem<T> cur = this.Next;
-            int i = 0;
-            while (cur != null && i < index - 1)
-            {
-                cur = cur.Next;
-                i++;
-            }
-
+            ListElem<T> cur = getElement(index);            
             ListElem<T> elem = new ListElem<T>(val);
+
             elem.Next = cur.Next;
             elem.Prev = cur;
             if (cur.Next != null)
@@ -94,11 +93,12 @@ namespace LinkedList
                 cur.Next.Prev = elem;
             }
             cur.Next = elem;
+            Count++;
         }
 
         public int Find(T val)
         {
-            ListElem<T> cur = this.Next;
+            ListElem<T> cur = this.First;
             int index = 0;
             int result = -1;
             while (cur != null)
@@ -114,7 +114,20 @@ namespace LinkedList
         }
         public bool isEmpty()
         {
-            return this.Next == null;
+            return this.First == null;
         }
+
+        private ListElem<T> getElement(int index)
+        {
+            ListElem<T> cur = this.First;
+            int i = 0;
+            while (cur != null && i < index - 1)
+            {
+                cur = cur.Next;
+                i++;
+            }
+            return cur;
+        }
+
     }
 }
