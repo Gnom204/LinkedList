@@ -23,14 +23,7 @@ namespace LinkedList
                 {
                     throw new Exception("shit, Segmentation fault");
                 }
-                ListElem<T> cur = this.First;
-                int i = 0;
-                //Вынести в отдельный метод
-                while (cur != null && i < index-1)
-                {
-                    cur = cur.Next;
-                    i++;
-                }
+                ListElem<T> cur =getElement(index);
                 return cur.value;
             }
             set
@@ -112,6 +105,55 @@ namespace LinkedList
             }
             return result;
         }
+
+        public bool Contains(T val)
+        {
+            ListElem<T> cur = this.First;
+            while (cur != null)
+            {
+                if (object.Equals(cur.value, val))
+                {
+                    return true;
+                }
+                cur = cur.Next;
+            }
+            return false;
+        }
+
+        public void RemoveFirst()
+        {
+            if (this.First == null)
+                return;
+
+            if (this.First.Next == null)
+            {
+                this.First = null;
+                this.Last = null;
+                return;
+            }
+
+            ListElem<T> cur = this.First;
+            this.First = cur.Next;
+            this.First.Prev = null;
+        }
+
+        public void RemoveLast()
+        {
+            if (this.Last == null)
+                return;
+
+            if (this.Last.Prev == null)
+            {
+                this.First = null;
+                this.Last = null;
+                return;
+            }
+
+            ListElem<T> cur = this.Last;
+            this.Last = cur.Prev;
+            this.Last.Next = null;
+        }
+
         public bool isEmpty()
         {
             return this.First == null;
@@ -121,7 +163,7 @@ namespace LinkedList
         {
             ListElem<T> cur = this.First;
             int i = 0;
-            while (cur != null && i < index - 1)
+            while (cur != null && i < index)
             {
                 cur = cur.Next;
                 i++;
