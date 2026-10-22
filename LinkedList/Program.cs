@@ -1,6 +1,6 @@
 ﻿using LinkedList;
 
-void printInfo<T>(MyLinkedList<T> list, int size)
+void printInfo<T>(MyLinkedList<T> list, int size) where T :IComparable
 {
     for (int i = 0; i < size; i++)
     {
@@ -27,6 +27,8 @@ list1.AddAt(15, 5);
 size++;
 
 printInfo<int>(list1, size);
+
+list1.Sort();
 
 foreach(int cifra in list1)
 {

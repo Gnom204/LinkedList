@@ -6,12 +6,13 @@ using System.Text;
 
 namespace LinkedList
 {
-    internal class MyLinkedList<T> :IEnumerable<T>
+    internal class MyLinkedList<T> : IEnumerable<T> where T : IComparable
     {
         private ListElem<T> First;
         private ListElem<T> Last;
         private int Count;
-        public MyLinkedList() {
+        public MyLinkedList()
+        {
             this.First = null;
             this.Last = null;
             this.Count = 0;
@@ -24,7 +25,7 @@ namespace LinkedList
                 {
                     throw new Exception("shit, Segmentation fault");
                 }
-                ListElem<T> cur =getElement(index);
+                ListElem<T> cur = getElement(index);
                 return cur.value;
             }
             set
@@ -77,7 +78,7 @@ namespace LinkedList
 
         public void AddAt(T val, int index)
         {
-            ListElem<T> cur = getElement(index);            
+            ListElem<T> cur = getElement(index);
             ListElem<T> elem = new ListElem<T>(val);
 
             elem.Next = cur.Next;
@@ -147,12 +148,41 @@ namespace LinkedList
             {
                 this.First = null;
                 this.Last = null;
-                return; 
+                return;
             }
 
             ListElem<T> cur = this.Last;
             this.Last = cur.Prev;
             this.Last.Next = null;
+        }
+
+        public void Remove(T val)
+        {
+            if(this.First == null)
+            {
+                throw new Exception("shit");
+            }
+            ListElem<T> cur = this.First;
+            int i = 0;
+            while(cur != null && i < Count)
+            {
+                if(cur.value.Equals(val))
+                {
+                    cur.Next.Prev = cur.Prev;
+                    cur.Prev.Next = cur.Next;
+                }
+                cur = cur.Next;
+
+            }
+        }
+
+        public void RemoveAt(int index)
+        {
+            if(index <0 || index >= Count)
+                throw new Exception("Segmentation fault");
+            ListElem<T> cur = getElement(index);
+            cur.Next.Prev = cur.Prev;
+            cur.Prev.Next = cur.Next;
         }
 
         public bool isEmpty()
@@ -175,14 +205,64 @@ namespace LinkedList
         {
             return GetEnumerator();
         }
+
+        public void Sort()
+        {
+            if (this.First == null)
+                throw new Exception("Shish");
+            for (int i = 0; i < Count; i++)
+            {
+                ListElem<T> cur = this.First;
+                for (int j = 0; j < Count; j++)
+                {
+                    if(cur.Next!= null)
+                    {
+                        if (cur.Next.value.CompareTo(cur.value) < 0)
+                        {
+                            T val = cur.value;
+                            cur.value = cur.Next.value;
+                            cur.Next.value = val;
+                        }
+                        cur = cur.Next;
+                    }
+
+                }
+
+            }
+        }
+
+        public void SortedAdd(T value)
+        {
+            if(this.First == null)
+            {
+
+            }
+        }
+
+        // для сортировки не используем индексатор, сортируем, меняя значения, пользуемся ссылками
         private ListElem<T> getElement(int index)
         {
-            ListElem<T> cur = this.First;
-            int i = 0;
+            // если индекс больше чем половина каунта, то идем с конца, если меньше, то сначала
+            int gran = Count/2;
+            ListElem<T> cur;
+            if(index < gran) {
+                cur = this.First;
+                int i = 0;
             while (cur != null && i < index)
+                {
+                    cur = cur.Next;
+                    i++;
+                }
+            }
+            else
             {
-                cur = cur.Next;
-                i++;
+                cur = this.Last;
+                int i = Count;
+                while (cur != null && i > index)
+                {
+                    cur = cur.Prev;
+                    i--;
+                }
             }
             return cur;
         }
