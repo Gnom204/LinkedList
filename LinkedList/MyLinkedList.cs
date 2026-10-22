@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 
 namespace LinkedList
 {
-    internal class MyLinkedList<T>
+    internal class MyLinkedList<T> :IEnumerable<T>
     {
         private ListElem<T> First;
         private ListElem<T> Last;
@@ -159,6 +160,16 @@ namespace LinkedList
             return this.First == null;
         }
 
+        public IEnumerator<T> GetEnumerator()
+        {
+            ListElem<T> cur = First;
+
+            while (cur != null)
+            {
+                yield return cur.value;
+                cur = cur.Next;
+            }
+        }
         private ListElem<T> getElement(int index)
         {
             ListElem<T> cur = this.First;
