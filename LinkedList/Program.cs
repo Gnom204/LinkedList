@@ -27,3 +27,10 @@ list1.AddAt(15, 5);
 size++;
 
 printInfo<int>(list1, size);
+
+foreach(int cifra in list1)
+{
+    Console.WriteLine(cifra + ", ");
+}
+
+

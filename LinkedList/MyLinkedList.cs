@@ -147,7 +147,7 @@ namespace LinkedList
             {
                 this.First = null;
                 this.Last = null;
-                return;
+                return; 
             }
 
             ListElem<T> cur = this.Last;
@@ -169,6 +169,11 @@ namespace LinkedList
                 yield return cur.value;
                 cur = cur.Next;
             }
+
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
         private ListElem<T> getElement(int index)
         {
